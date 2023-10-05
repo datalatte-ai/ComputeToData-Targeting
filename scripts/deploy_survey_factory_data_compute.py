@@ -9,28 +9,26 @@ from helpers.helper import validate_ddo, wait_for_ddo
 from solcx import compile_standard, install_solc
 from ocean_lib.data_provider.data_encryptor import DataEncryptor
 from web3.logs import DISCARD
-from ocean_lib.ocean.util import to_wei
-
 load_dotenv()
 
-oceanProviderUrl = "https://v4.provider.oceanprotocol.com"
+oceanProviderUrl = "https://v4.provider.oceanprotocol.com/"
 contract_ocean_address = "0xd8992Ed72C445c35Cb4A2be468568Ed1079357c8"
 OceanProtocolERC721FactoryAddress = "0x7d46d74023507d30ccc2d3868129fbe4e400e40b"
 chain_id = 80001
 wallet_address = os.getenv("WALLET_ADDRESS")
 private_key = os.getenv("PRIVATE_KEY")
-name_of_nft = "algoritm_test_1"
-symbol_of_nft = "al1"
+name_of_nft = "dataset(compute)1"
+symbol_of_nft = "ts1"
 token_uri = "https://ipfs.datalatte.com/ipfs/QmYCK1y5dQnyWeefjnUvpR4oAPQjFEDtUec34UFSYqyKtV"
-name_of_datatoken = "algo_test_1"
-symbol_of_datatoken = "alg1"
-name_of_published_assets = "algoritm(1)"
-description_of_published_assets = "algo alog algo"
+name_of_datatoken = "dataset(compute)1"
+symbol_of_datatoken = "ts1"
+name_of_published_assets = "dataset(compute)1"
+description_of_published_assets = "testasdasdasdasdasdasdasdasdasdasdasdtest2"
 author_of_published_assets = "amqa"
-url_donwload_file = "QmSfrpQDaD6EEVw3YNNS5TBLegdG3xATNCrQsZdavmBHjm"
-# url_donwload_file = "https://raw.githubusercontent.com/oceanprotocol/c2d-examples/main/branin_and_gpr/gpr.py"
+url_donwload_file = "QmcmidkzLUzUggumBieMYHPZE9Cws3hjqYhWQeYE2StHZv"
+# url_donwload_file = "https://raw.githubusercontent.com/oceanprotocol/c2d-examples/main/branin_and_gpr/branin.arff"
 
-def create_nft_algo(w3):
+def create_nft_datatoken_compute(w3):
 
     # give him address of surveyfactory contract
     address_contract_survey_factory = "0x92A0BE075b2c51c41e93023e4354208bdeeEeF38"
@@ -43,9 +41,7 @@ def create_nft_algo(w3):
     txn = {
         "chainId": chain_id,
         "from": wallet_address,
-        "nonce": nonce2,
-        'gas': 1600000,  # Adjust as needed
-        'gasPrice': w3.toWei('2.5', 'gwei')
+        "nonce": nonce2
     }
 
     receipt = storage_sol_survey_factory.functions.createNftWithErc20WithFixedRate(
@@ -94,23 +90,17 @@ def create_nft_algo(w3):
     print(tx_receipt_create_nft)
     rich_logs = storage_sol_survey_factory.events.NFTCreated().processReceipt(tx_receipt_create_nft, errors=DISCARD)
     rich_logs_Token = storage_sol_survey_factory.events.TokenCreated().processReceipt(tx_receipt_create_nft, errors=DISCARD)
-
+    print(rich_logs_Token)
     data_token = rich_logs_Token[0]['args']['newTokenAddress']
     nft_address = rich_logs[0]['args']['newTokenAddress']
 
     print("nftAddress", nft_address)
     print("dataTokenAddress", data_token)
 
-    # storage_sol_survey_factory.functions.mint(w3.toChecksumAddress(wallet_address.lower()), to_wei(5))
-
-
     return data_token, nft_address
 
 
-def published_algo_on_ocean(w3, info_address_nft_token):
-
-    
-
+def published_on_ocean_compute(w3, info_address_nft_token):
     assetUrl = {
     "datatokenAddress": info_address_nft_token[0],
     "nftAddress": info_address_nft_token[1],
@@ -121,9 +111,6 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     }
 
     date_created = datetime.now().isoformat()
-    image = "oceanprotocol/algo_dockers"
-    tag = "python-branin"
-    checksum = "sha256:88880bc85b0e3342ff416c796df7ad9079b2805f92a6ebfc5c84ac582fb25de9"
     # Prepare DDO
     DDO = {
     "@context": ["https://w3id.org/did/v1"],
@@ -134,33 +121,48 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     "metadata": {
     "created": date_created,
     "updated": date_created,
-    "type": "algorithm",
+    "type": "dataset",
     "name": name_of_published_assets,
     "description": description_of_published_assets,
     "author": author_of_published_assets,
     "license": "MIT",
-    "algorithm":{
-                "language": "py",
-                "format": "docker-image",
-                "version": "0.1",
-                "container": {
-                    "entrypoint": "python $ALGO",
-                    "image": "python",
-                    "tag": "latest",
-                    "checksum": checksum,
-                },
-            }
     },
     "services": [
     {
         "id": "1",
-        "type": "access",
+        "type": "compute",
+        "datatokenAddress":info_address_nft_token[0],
         "files": "",
-        "datatokenAddress": info_address_nft_token[0],
         "serviceEndpoint": "https://v4.provider.oceanprotocol.com",
-        "timeout": 86400
+        "timeout": 86400,
+        "compute": {
+                "allowRawAlgorithm": False,
+                "allowNetworkAccess": True,
+                "publisherTrustedAlgorithms": [],
+                "publisherTrustedAlgorithmPublishers": [],
+            }
     },
     ],
+    "accessDetails": {
+    "type": "free",
+    "addressOrId": "0x0000000000000000000000000000000000000000",
+    "templateId": 1,
+    "price": "1",
+    "baseToken": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "name": "OCEAN",
+      "symbol": "OCEAN"
+    },
+    "datatoken": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "name": "",
+      "symbol": ""
+    },
+    "isPurchasable": True,
+    "isOwned": False,
+    "validOrderTx": "",
+    "publisherMarketOrderFee": "0"
+    },
     }
 
 
@@ -170,6 +172,7 @@ def published_algo_on_ocean(w3, info_address_nft_token):
 
     _, proof = validate_ddo(DDO)
 
+    print(proof)
     proof = (
     proof["publicKey"],
     proof["v"],

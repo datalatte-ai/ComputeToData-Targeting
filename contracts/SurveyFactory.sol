@@ -19,10 +19,17 @@ interface OPFactory {
         bytes[] bytess;
     }
 
-    function createNftWithErc20(
+    struct FixedData {
+        address fixedPriceAddress;
+        address[] addresses;
+        uint256[] uints;
+    }
+
+    function createNftWithErc20WithFixedRate(
         NftCreateData calldata _NftCreateData, 
-        ErcCreateData calldata _ErcCreateData
-    ) external returns (address erc721Address, address erc20Address);
+        ErcCreateData calldata _ErcCreateData, 
+        FixedData calldata _FixedData
+    ) external returns (address erc721Address, address erc20Address, bytes32 exchangeId);
 
 }
 
@@ -56,15 +63,19 @@ contract SurveyFactory {
 
     /// Ocean Protocol contract
     OPFactory oceanFactory;
-    address private owner;
+
     /// @notice Constructor to initialize the 
     /// @param oceanFactoryAddress Ocean Factory's address
     constructor(address oceanFactoryAddress) {
         oceanFactory = OPFactory(oceanFactoryAddress);
-        owner = msg.sender;
     }
 
-    function createNftWithErc20(OPFactory.NftCreateData calldata nftData, OPFactory.ErcCreateData calldata ercData) public {
-        oceanFactory.createNftWithErc20(nftData, ercData);        
+    /// @notice Creates an nft and data token with a fixed price.
+    /// @dev After calling the function, get events NFTCreated and TokenCreated in the client.
+    /// @param nftData Data related to the NFT to create.
+    /// @param ercData Data related to the token to create.
+    /// @param fixedData Data related to the price.
+    function createNftWithErc20WithFixedRate(OPFactory.NftCreateData calldata nftData, OPFactory.ErcCreateData calldata ercData, OPFactory.FixedData calldata fixedData) public {
+        oceanFactory.createNftWithErc20WithFixedRate(nftData, ercData, fixedData);        
     }
 }
