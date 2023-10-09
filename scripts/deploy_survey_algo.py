@@ -27,7 +27,7 @@ symbol_of_datatoken = "alg1"
 name_of_published_assets = "algoritm(1)"
 description_of_published_assets = "algo alog algo"
 author_of_published_assets = "amqa"
-url_donwload_file = "QmSfrpQDaD6EEVw3YNNS5TBLegdG3xATNCrQsZdavmBHjm"
+url_donwload_file = "QmU9LHbnYb4VkqzuYGMsjJmvfggNfCzBKnKE7RcLeCNoim"
 # url_donwload_file = "https://raw.githubusercontent.com/oceanprotocol/c2d-examples/main/branin_and_gpr/gpr.py"
 
 def create_nft_algo(w3):

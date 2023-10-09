@@ -40,29 +40,29 @@ ddo_algo = published_algo_on_ocean(w3, info_address_nft_token_algo)
 
 job_result = allowsAlgorithm(w3, ddo_data, ddo_algo, ocean)
 # print(f"https://market.oceanprotocol.com/asset/{ddo_id}");
+print(job_result)
+# dataNft_contract_address = dataNft_vault(w3)
+# #return address of survey vault contract
+# vault_contract_address = survey_vault(w3, dataNft_contract_address)
 
-dataNft_contract_address = dataNft_vault(w3)
-#return address of survey vault contract
-vault_contract_address = survey_vault(w3, dataNft_contract_address)
+# # return nft address and token address (datatokenaddress, nftaddress)
+# info_address_nft_token = create_nft_datatoken(w3)
 
-# return nft address and token address (datatokenaddress, nftaddress)
-info_address_nft_token = create_nft_datatoken(w3)
+# #published your nft on ocean market
+# ddo_id = published_on_ocean(w3, info_address_nft_token, vault_contract_address)
 
-#published your nft on ocean market
-ddo_id = published_on_ocean(w3, info_address_nft_token, vault_contract_address)
+# print(f"https://market.oceanprotocol.com/asset/{ddo_id}");
 
-print(f"https://market.oceanprotocol.com/asset/{ddo_id}");
+# # w3, dataNft_contract_address, token_id, nftaddress
+# tx_recipt = approve_contract(w3, dataNft_contract_address, 1, info_address_nft_token[1])
+# print(f"transaction hash of transfer approve : {(tx_recipt.transactionHash).hex()}")
 
-# w3, dataNft_contract_address, token_id, nftaddress
-tx_recipt = approve_contract(w3, dataNft_contract_address, 1, info_address_nft_token[1])
-print(f"transaction hash of transfer approve : {(tx_recipt.transactionHash).hex()}")
+# # vault_contract_address
+# tx_recipt_datanft = transfer_nft_to_datanft_contract(w3, dataNft_contract_address, 1, info_address_nft_token[1], vault_contract_address)
+# print(f"transaction hash of transfer datanft to datanft contract : {(tx_recipt_datanft.transactionHash).hex()}")
 
-# vault_contract_address
-tx_recipt_datanft = transfer_nft_to_datanft_contract(w3, dataNft_contract_address, 1, info_address_nft_token[1], vault_contract_address)
-print(f"transaction hash of transfer datanft to datanft contract : {(tx_recipt_datanft.transactionHash).hex()}")
-
-if job_result[0]:
-    result = addToWhiteList(w3, job_result[1], vault_contract_address)
-    print(f"result : {result}")
-else:
-    print(False)
+# if job_result[0]:
+#     result = addToWhiteList(w3, job_result[1], vault_contract_address)
+#     print(f"result : {result}")
+# else:
+#     print(False)
