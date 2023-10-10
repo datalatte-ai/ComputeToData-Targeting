@@ -24,7 +24,7 @@ def addToWhiteList(w3, wallet_address_user, vualt_address):
     'nonce': nonce3,
     'from': wallet_address,
     'gas': 900000,
-    'gasPrice': w3.toWei('10', 'gwei')
+    'gasPrice': w3.to_wei('10', 'gwei')
     }
 
 

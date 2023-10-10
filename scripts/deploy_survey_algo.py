@@ -9,7 +9,13 @@ from helpers.helper import validate_ddo, wait_for_ddo
 from solcx import compile_standard, install_solc
 from ocean_lib.data_provider.data_encryptor import DataEncryptor
 from web3.logs import DISCARD
-from ocean_lib.ocean.util import to_wei
+# from ocean_lib.ocean.util import (
+#     create_checksum,
+#     get_address_of_type,
+#     get_args_object,
+#     get_from_address,
+#     toWei,
+# )
 
 load_dotenv()
 
@@ -27,7 +33,7 @@ symbol_of_datatoken = "alg1"
 name_of_published_assets = "algoritm(1)"
 description_of_published_assets = "algo alog algo"
 author_of_published_assets = "amqa"
-url_donwload_file = "QmU9LHbnYb4VkqzuYGMsjJmvfggNfCzBKnKE7RcLeCNoim"
+url_donwload_file = "QmZNhCHXGGXM5213HxXLm2Ykgxg3pAAuhepjduQXY9Hxsj"
 # url_donwload_file = "https://raw.githubusercontent.com/oceanprotocol/c2d-examples/main/branin_and_gpr/gpr.py"
 
 def create_nft_algo(w3):
@@ -140,12 +146,12 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     "author": author_of_published_assets,
     "license": "MIT",
     "algorithm":{
-                "language": "py",
+                "language": "python",
                 "format": "docker-image",
                 "version": "0.1",
                 "container": {
                     "entrypoint": "python $ALGO",
-                    "image": "python",
+                    "image": "oceanprotocol/algo_dockers",
                     "tag": "latest",
                     "checksum": checksum,
                 },
@@ -198,12 +204,14 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     'gasPrice': w3.toWei('10', 'gwei')
     }
 
+    
+    
 
     # Building a transaction to call the `setMetaData` function of the contract
     setMetaData_function = nftContract.functions.setMetaData(
     0,
     oceanProviderUrl,
-    wallet_address.encode('utf-8'),
+    wallet_address.encode("utf-8"),
     bytes([2]),
     encryptedDDO.text,
     metadataHash,

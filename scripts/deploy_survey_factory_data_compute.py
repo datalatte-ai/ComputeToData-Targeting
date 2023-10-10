@@ -40,7 +40,8 @@ def create_nft_datatoken_compute(w3):
     txn = {
         "chainId": chain_id,
         "from": wallet_address,
-        "nonce": nonce2
+        "nonce":w3.eth.get_transaction_count(wallet_address),
+        "gasPrice":w3.toWei('40', 'gwei')
     }
 
     receipt = storage_sol_survey_factory.functions.createNftWithErc20WithFixedRate(
@@ -141,27 +142,7 @@ def published_on_ocean_compute(w3, info_address_nft_token):
                 "publisherTrustedAlgorithmPublishers": [],
             }
     },
-    ],
-    "accessDetails": {
-    "type": "free",
-    "addressOrId": "0x0000000000000000000000000000000000000000",
-    "templateId": 1,
-    "price": "1",
-    "baseToken": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "name": "OCEAN",
-      "symbol": "OCEAN"
-    },
-    "datatoken": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "name": "",
-      "symbol": ""
-    },
-    "isPurchasable": True,
-    "isOwned": False,
-    "validOrderTx": "",
-    "publisherMarketOrderFee": "0"
-    },
+    ]
     }
 
 
@@ -199,7 +180,6 @@ def published_on_ocean_compute(w3, info_address_nft_token):
     'gas': 900000,
     'gasPrice': w3.toWei('10', 'gwei')
     }
-
 
     # Building a transaction to call the `setMetaData` function of the contract
     setMetaData_function = nftContract.functions.setMetaData(
