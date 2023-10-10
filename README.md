@@ -15,7 +15,7 @@ Ensure that Python 3.10.11 is installed on your system.
 3. Install the necessary dependencies by executing the following command:
 
 ```shell
-pip install ocean-lib
+pip install ocean-lib==3.0.2
 ```
 ## Deployment
 1. Ensure that you are in the project directory.
