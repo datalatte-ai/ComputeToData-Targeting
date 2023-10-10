@@ -1,7 +1,6 @@
 import os
 from web3 import Web3
 from dotenv import load_dotenv
-from brownie.network import accounts
 from scripts.deploy_survey_factory_data_compute import create_nft_datatoken_compute, published_on_ocean_compute
 from scripts.deploy_survey_algo import create_nft_algo, published_algo_on_ocean
 from scripts.deploy_survey_vault import survey_vault
@@ -19,16 +18,18 @@ from ocean_lib.example_config import get_config_dict
 import os
 # from brownie.network import accounts
 load_dotenv()
-from brownie import network
 w3 = Web3(Web3.HTTPProvider(os.getenv("MUMBAI_RPC_URL")))
 w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 # Check if connected (should return True)
-print(w3.isConnected())
+print(w3.is_connected())
 # connect_to_network("polygon-test")
 # print(network.is_connected())
 config = get_config_dict("mumbai")
 ocean = Ocean(config)
 
+bob_pr = os.getenv('PRIVATE_KEY')
+bob = w3.eth.account._parsePrivateKey(bob_pr)
+print((bob))
 
 # return nft address and token address (datatokenaddress, nftaddress)
 info_address_nft_token = create_nft_datatoken_compute(w3)
@@ -41,6 +42,7 @@ ddo_algo = published_algo_on_ocean(w3, info_address_nft_token_algo)
 job_result = allowsAlgorithm(w3, ddo_data, ddo_algo, ocean)
 # print(f"https://market.oceanprotocol.com/asset/{ddo_id}");
 print(job_result)
+ocean.assets.create_url_asset
 # dataNft_contract_address = dataNft_vault(w3)
 # #return address of survey vault contract
 # vault_contract_address = survey_vault(w3, dataNft_contract_address)

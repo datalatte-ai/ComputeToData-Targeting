@@ -16,11 +16,12 @@ from ocean_lib.example_config import get_config_dict
 import os
 import time
 from decimal import Decimal
-from brownie.network import accounts
 
 def allowsAlgorithm(w3, DATA_ddo_dic, ALGO_ddo_dic, ocean):
     bob_pr = os.getenv('PRIVATE_KEY')
-    bob = accounts.add(bob_pr)
+    bob = w3.eth.account.privateKeyToAccount(bob_pr)
+    print(bob.address)
+    # bob = accounts.add(bob_pr)
     
     DATA_ddo = ocean.assets.resolve(DATA_ddo_dic['id'])
     ALGO_ddo = ocean.assets.resolve(ALGO_ddo_dic['id'])
@@ -89,5 +90,5 @@ def allowsAlgorithm(w3, DATA_ddo_dic, ALGO_ddo_dic, ocean):
     output1 = ocean.compute.compute_job_result_logs(
     DATA_ddo, compute_service, job_id, bob, 'output'
     )[0]
-    
+
     return output1, bob.address

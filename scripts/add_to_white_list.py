@@ -13,7 +13,7 @@ def addToWhiteList(w3, wallet_address_user, vualt_address):
     with open("./contracts/abi/abi_survey_vault.json") as f:
         contractERC721TemplateABI = json.load(f)
     # Create nft contract
-    nftContract = w3.eth.contract(address=Web3.toChecksumAddress(vualt_address), abi=contractERC721TemplateABI)
+    nftContract = w3.eth.contract(address=Web3.to_checksum_address(vualt_address), abi=contractERC721TemplateABI)
     acct = Account.from_key(os.getenv('PRIVATE_KEY'))
 
 
@@ -24,7 +24,7 @@ def addToWhiteList(w3, wallet_address_user, vualt_address):
     'nonce': nonce3,
     'from': wallet_address,
     'gas': 900000,
-    'gasPrice': w3.toWei('10', 'gwei')
+    'gasPrice': w3.to_wei('10', 'gwei')
     }
 
 

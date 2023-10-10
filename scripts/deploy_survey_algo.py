@@ -9,7 +9,13 @@ from helpers.helper import validate_ddo, wait_for_ddo
 from solcx import compile_standard, install_solc
 from ocean_lib.data_provider.data_encryptor import DataEncryptor
 from web3.logs import DISCARD
-from ocean_lib.ocean.util import to_wei
+# from ocean_lib.ocean.util import (
+#     create_checksum,
+#     get_address_of_type,
+#     get_args_object,
+#     get_from_address,
+#     to_wei,
+# )
 
 load_dotenv()
 
@@ -45,7 +51,7 @@ def create_nft_algo(w3):
         "from": wallet_address,
         "nonce": nonce2,
         'gas': 1600000,  # Adjust as needed
-        'gasPrice': w3.toWei('2.5', 'gwei')
+        'gasPrice': w3.to_wei('2.5', 'gwei')
     }
 
     receipt = storage_sol_survey_factory.functions.createNftWithErc20WithFixedRate(
@@ -55,27 +61,27 @@ def create_nft_algo(w3):
             1,
             token_uri,
             True,
-            w3.toChecksumAddress(wallet_address.lower()),
+            w3.to_checksum_address(wallet_address.lower()),
         ),
         (
             1,
             [name_of_datatoken,symbol_of_datatoken],
             [
-                w3.toChecksumAddress(wallet_address.lower()),
-                w3.toChecksumAddress("0x0000000000000000000000000000000000000000".lower()),
-                w3.toChecksumAddress("0x0000000000000000000000000000000000000000".lower()),
-                w3.toChecksumAddress("0x0000000000000000000000000000000000000000".lower()),
+                w3.to_checksum_address(wallet_address.lower()),
+                w3.to_checksum_address("0x0000000000000000000000000000000000000000".lower()),
+                w3.to_checksum_address("0x0000000000000000000000000000000000000000".lower()),
+                w3.to_checksum_address("0x0000000000000000000000000000000000000000".lower()),
             ],
             [100000000000000000000000,0],
             [],
         ),
         (
-            w3.toChecksumAddress(("0x25e1926E3d57eC0651e89C654AB0FA182C6D5CF7").lower()),
+            w3.to_checksum_address(("0x25e1926E3d57eC0651e89C654AB0FA182C6D5CF7").lower()),
             [
-                w3.toChecksumAddress(contract_ocean_address.lower()),
-                w3.toChecksumAddress(wallet_address.lower()),
-                w3.toChecksumAddress(wallet_address.lower()),
-                w3.toChecksumAddress("0x0000000000000000000000000000000000000000".lower()),
+                w3.to_checksum_address(contract_ocean_address.lower()),
+                w3.to_checksum_address(wallet_address.lower()),
+                w3.to_checksum_address(wallet_address.lower()),
+                w3.to_checksum_address("0x0000000000000000000000000000000000000000".lower()),
             ],
             [
             18,18,1000000000000000000,1000000000000000,1
@@ -92,8 +98,8 @@ def create_nft_algo(w3):
     tx_receipt_create_nft = w3.eth.get_transaction_receipt(txn_hash.hex())
     # replace 'transaction_hash' with actual value
     print(tx_receipt_create_nft)
-    rich_logs = storage_sol_survey_factory.events.NFTCreated().processReceipt(tx_receipt_create_nft, errors=DISCARD)
-    rich_logs_Token = storage_sol_survey_factory.events.TokenCreated().processReceipt(tx_receipt_create_nft, errors=DISCARD)
+    rich_logs = storage_sol_survey_factory.events.NFTCreated().process_receipt(tx_receipt_create_nft, errors=DISCARD)
+    rich_logs_Token = storage_sol_survey_factory.events.TokenCreated().process_receipt(tx_receipt_create_nft, errors=DISCARD)
 
     data_token = rich_logs_Token[0]['args']['newTokenAddress']
     nft_address = rich_logs[0]['args']['newTokenAddress']
@@ -101,7 +107,7 @@ def create_nft_algo(w3):
     print("nftAddress", nft_address)
     print("dataTokenAddress", data_token)
 
-    # storage_sol_survey_factory.functions.mint(w3.toChecksumAddress(wallet_address.lower()), to_wei(5))
+    # storage_sol_survey_factory.functions.mint(w3.to_checksum_address(wallet_address.lower()), to_wei(5))
 
 
     return data_token, nft_address
@@ -140,12 +146,12 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     "author": author_of_published_assets,
     "license": "MIT",
     "algorithm":{
-                "language": "py",
+                "language": "python",
                 "format": "docker-image",
                 "version": "0.1",
                 "container": {
                     "entrypoint": "python $ALGO",
-                    "image": "python",
+                    "image": "oceanprotocol/algo_dockers",
                     "tag": "latest",
                     "checksum": checksum,
                 },
@@ -164,7 +170,7 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     }
 
 
-    DDO["id"] = "did:op:" + hashlib.sha256((w3.toChecksumAddress(info_address_nft_token[1]) + str(DDO["chainId"])).encode()).hexdigest()
+    DDO["id"] = "did:op:" + hashlib.sha256((w3.to_checksum_address(info_address_nft_token[1]) + str(DDO["chainId"])).encode()).hexdigest()
     encryptedFiles = DataEncryptor.encrypt(objects_to_encrypt=assetUrl, provider_uri= oceanProviderUrl, chain_id=DDO["chainId"])
     DDO["services"][0]["files"] = encryptedFiles.text
 
@@ -185,7 +191,7 @@ def published_algo_on_ocean(w3, info_address_nft_token):
         contractERC721TemplateABI = json.load(f)
 
     # Create nft contract
-    nftContract = w3.eth.contract(address=Web3.toChecksumAddress(DDO["nftAddress"]), abi=contractERC721TemplateABI)
+    nftContract = w3.eth.contract(address=Web3.to_checksum_address(DDO["nftAddress"]), abi=contractERC721TemplateABI)
     acct = Account.from_key(os.getenv('PRIVATE_KEY'))
 
 
@@ -195,15 +201,17 @@ def published_algo_on_ocean(w3, info_address_nft_token):
     "chainId":chain_id,
     'nonce': nonce3,
     'gas': 900000,
-    'gasPrice': w3.toWei('10', 'gwei')
+    'gasPrice': w3.to_wei('10', 'gwei')
     }
 
+    
+    
 
     # Building a transaction to call the `setMetaData` function of the contract
     setMetaData_function = nftContract.functions.setMetaData(
     0,
     oceanProviderUrl,
-    wallet_address.encode('utf-8'),
+    wallet_address.encode("utf-8"),
     bytes([2]),
     encryptedDDO.text,
     metadataHash,

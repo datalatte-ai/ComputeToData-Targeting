@@ -24,7 +24,7 @@ def transfer_nft_to_datanft_contract(w3, dataNft_contract_address, token_id, nft
     "chainId":chain_id,
     'nonce': nonce3,
     'gas': 900000,
-    'gasPrice': w3.toWei('10', 'gwei')
+    'gasPrice': w3.to_wei('10', 'gwei')
     }
 
 
